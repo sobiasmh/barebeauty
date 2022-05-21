@@ -8,6 +8,7 @@ import Watch from '../screens/Watch';
 import profile from '../screens/profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../const/colors';
+import { color } from 'react-native-reanimated';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,6 +45,16 @@ const BottomNavigator = () => {
         component={Shop}
         options={{
           headerShown:false,
+          headerTitleStyle:{
+            fontSize:28,
+            fontWeight:"bold",
+            color:COLORS.primary
+
+          },
+          headerStyle:{
+            backgroundColor:COLORS.lightprimary,
+            
+          },
           tabBarIcon: ({color}) => (
             <Icon name="shopping-cart" color={color} size={28} />
           ),

@@ -1,18 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View ,ImageBackground, TouchableOpacity} from 'react-native';
+import { StyleSheet, TextInput,Text, View ,ImageBackground, TouchableOpacity,ScrollView,Image,FlatList} from 'react-native';
 
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
-
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import COLORS from '../const/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import categories from '../const/categories';
+import AllMakeup from './AllMakeup';
+import Category from './Category';
 export default ({ navigation }) => {
- 
+
+  const Tab = createMaterialTopTabNavigator();
+
   
+
         return(
-            <View style={styles.container}>
-              <Text>Shop</Text>
-            </View>
+          
+          <Tab.Navigator
+        
+          screenOptions={{
+            tabBarLabelStyle: { fontSize: 17, fontWeight:'bold', color:COLORS.primary, marginTop:19 },
+            
+            tabBarStyle: { backgroundColor: COLORS.lightprimary,height:70  },
+            tabBarIndicatorStyle:{backgroundColor:COLORS.primary},
+            swipeEnabled:true,
+            
+                      }}>
+          <Tab.Screen name="Category" component={Category} />
+          <Tab.Screen name="AllMakeup" component={AllMakeup} />
+
+
+
+        </Tab.Navigator>
           )
   
     
@@ -33,18 +51,64 @@ const styles = StyleSheet.create({
   
     },
     text: {
-      color: "white",
-      fontSize: 60,
-      marginTop: 415,
-      marginLeft: 30,
-      fontWeight: "bold",
-      textAlign: "left",
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 27,
+      margin: 15,
     },
-    text2: {
-      color: "white",
-      fontSize: 20,
-      marginLeft: 30,
-      textAlign: "left",
-    }
+    inputContainer: {
+      flex: 1,
+      height: 50,
+      borderRadius: 10,
+      flexDirection: 'row',
+      backgroundColor: "#E5E5E5",
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    sortBtn: {
+      width: 50,
+      height: 50,
+      marginLeft: 10,
+      backgroundColor: COLORS.primary,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    carts: {
+      backgroundColor:"#f5dfe6",
+      borderRadius:10,
+      width: 147,
+      height: 190,
+      margin: 12,
+      padding: 5,
+      
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      flexWrap: 'wrap',
+      flexBasis: '50%',
+    },
+    productImg: {
+      resizeMode: 'cover',
+      height: 100,
+      width: 100,
+      marginRight: 'auto',
+      marginLeft: 'auto',
+      marginTop: 8,
+    },
+    prdtext1: {
+      fontWeight: 'bold',
+      fontSize: 15,
+      marginTop: 9,
+      marginLeft: 9,
+    },
+    prdtext2: {
+      fontWeight: 'bold',
+      fontSize: 15,
+      marginTop: 9,
+      marginLeft: 9,
+    },
   });
   
