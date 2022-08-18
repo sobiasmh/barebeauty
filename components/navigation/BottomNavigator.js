@@ -9,7 +9,7 @@ import profile from '../screens/profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../const/colors';
 import { color } from 'react-native-reanimated';
-
+import Loginscreens from '../screens/Loginscreens';
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
@@ -95,8 +95,8 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={profile}
+        name="LoginScreens"
+        component={Loginscreens}
         options={{
           headerShown:false,
           tabBarIcon: ({color}) => (

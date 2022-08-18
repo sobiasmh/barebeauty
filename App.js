@@ -3,9 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View ,ImageBackground, TouchableOpacity} from 'react-native';
 import Home from './components/screens/Home';
-import LoginScreen from './components/screens/LoginScreen';
+import Start from './components/screens/Start';
 import BottomNavigator from './components/navigation/BottomNavigator';
 
+import Toast from 'react-native-toast-message';
+// context api
+import Auth from './context/store/Auth';
 
 export default function App() {
 
@@ -19,7 +22,7 @@ const Stack = createNativeStackNavigator();
       <Stack.Navigator
       screenOptions={{headerShown: false}}
         >
-                <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name="Start" component={Start} />
                 <Stack.Screen name="Home" component={BottomNavigator} />
 
         
@@ -29,9 +32,12 @@ const Stack = createNativeStackNavigator();
   };
 
   return (
-    <NavigationContainer>
-      <StackNav />
-    </NavigationContainer>
+    <Auth>
+      <NavigationContainer>
+        <StackNav />
+        <Toast refs={(refs)=> Toast.setRef(refs)}/>
+      </NavigationContainer>
+    </Auth>
   );
 }
 

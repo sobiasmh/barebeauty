@@ -39,7 +39,7 @@ export default ({ navigation }) => {
                             marginLeft: 100,
                             marginTop: 9,
                           }}
-                          source={{uri: 'https://cdn-icons.flaticon.com/png/512/1807/premium/1807363.png?token=exp=1641395761~hmac=6a69b4fe5c6246448c45248ef9251438'}}
+                          source={{uri: 'https://cdn-icons-png.flaticon.com/512/1940/1940922.png'}}
                         />
                       </View>
                     </TouchableOpacity>
@@ -53,7 +53,7 @@ export default ({ navigation }) => {
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                       }}
-                      onPress={() => navigation.navigate('AllMakeup')}>
+                      onPress={() => navigation.navigate('AllMakeup', {n:"Lips"})}>
                       <View>
                         <Text style={styles.text}>Lips</Text>
                       </View>
@@ -66,7 +66,7 @@ export default ({ navigation }) => {
                           marginTop: 9,
                         }}
                         source={{
-                          uri: 'https://cdn-icons.flaticon.com/png/512/2975/premium/2975771.png?token=exp=1641395750~hmac=5178dc8f91076fbbab1b2bab911a9d03',
+                          uri: 'https://cdn-icons-png.flaticon.com/512/2798/2798018.png',
                         }}
                       />
                     </TouchableOpacity>
@@ -80,7 +80,7 @@ export default ({ navigation }) => {
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                       }}
-                      onPress={() => navigation.navigate('AllMakeup')}>
+                      onPress={() => navigation.navigate('AllMakeup', {n:"Eyes"})}>
                       <View>
                         <Text style={styles.text}>Eyes</Text>
                       </View>
@@ -107,7 +107,7 @@ export default ({ navigation }) => {
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                       }}
-                      onPress={() => navigation.navigate('AllMakeup')}>
+                      onPress={() => navigation.navigate('AllMakeup', {n:"Skincare"})}>
                       <View>
                         <Text style={styles.text}>Skin</Text>
                       </View>
@@ -120,7 +120,7 @@ export default ({ navigation }) => {
                           marginTop: 9,
                         }}
                         source={{
-                          uri: 'https://cdn-icons.flaticon.com/png/512/1807/premium/1807383.png?token=exp=1641395758~hmac=cd735b823af1fa728225500133d35683',
+                          uri: 'https://cdn-icons-png.flaticon.com/512/3501/3501241.png',
                         }}
                       />
                     </TouchableOpacity>

@@ -7,10 +7,29 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import StarRating from 'react-native-star-rating';
 import prod from '../const/prod';
 
+import baseURL from '../../assets/common/baseURL';
+import axios from 'axios';
+
+
 export default ({ navigation ,route}) => {
     const [search, setSearch] = useState('');
     const [filtered, setFilterted] = useState('');
     const [selectedCategoryName, setSelectedCategoryName] = React.useState(0);
+
+    const [listings, setlistings] = useState([]);
+
+    useEffect(() => {
+      axios.get(`${baseURL}products`)
+      .then((res)=>{
+        console.log(res.data);
+        setlistings(res.data);
+      })
+      return()=>{
+        setlistings([])
+      };
+    }, []);
+
+    
     const Stack = createStackNavigator();
 
     const {n} = route.params != undefined ? route.params : {}
@@ -57,24 +76,24 @@ export default ({ navigation ,route}) => {
                   <View>
                   <FlatList
                style={{ flex:1}}
-               data={filtered.length > 0 ? filtered : prod && prod
-                ? prod.filter((item) => item.name.match(n))
-                : null }
+               data={listings}
                numColumns={2}
                showsVerticalScrollIndicator={false}
                renderItem={({ item }) => {
                  return (
                    <View style={styles.row}>
+
                      <View style={styles.carts}>
-                       <Image
-                         style={styles.productImg}
-                         source={item.image}
-                       />
+                     <Image
+              style={styles.productImg}
+              source={{uri: item.Img}}
+            />
+                       
                        <View>
-                         <Text style={styles.prdtext1}>{item.name}</Text>
+                         <Text style={styles.prdtext1}>{item.Title}</Text>
                        </View>
                        <View style={styles.row}>
-                         <Text style={styles.prdtext2}>Rs {item.price}</Text>
+                         <Text style={styles.prdtext2}>Rs {item.Price}</Text>
            
                          <TouchableOpacity
                            style={{
@@ -125,14 +144,14 @@ export default ({ navigation ,route}) => {
             <View>
               <Image
                 style={{ height: 290, width: 290,marginLeft:30, borderRadius:20, marginTop:15, marginBottom:15}}
-                source={product.image}
+                source={{uri: product.Img}}
               />
             </View>
               <View>
-                <Text style={{fontSize:25, fontWeight:"bold", marginLeft:14}}>{product.name}</Text>
+                <Text style={{fontSize:25, fontWeight:"bold", marginLeft:14}}>{product.Title}</Text>
               </View>
               <View>
-                <Text style={{fontSize:20, marginRight:17,fontWeight:"bold", marginLeft:14}}>Rs. {product.price}</Text>
+                <Text style={{fontSize:20, marginRight:17,fontWeight:"bold", marginLeft:14}}>Rs. {product.Price}</Text>
               </View>
               <View style={{flexDirection:"row", justifyContent:"flex-start", marginTop:5, marginLeft:14}}>
 
@@ -155,7 +174,7 @@ export default ({ navigation ,route}) => {
               <View style={{ padding: 4, marginTop:5,margin:14,alignContent: 'center' }}>
                 <Text
                   style={{ backgroundColor: COLORS.lightprimary, padding: 8,borderRadius:10 }}>
-                  Gorgeous matte makeup without the dryness IS possible! With NYX Professional Makeup Stay Matte But Not Flat Liquid Foundation you can cover imperfections and even skin tone without that flat, dry feeling. With an expanded range of colors from Ivory to Porcelain and Beige to Chestnut, Cinnamon and Deep Dark, there is a buildable natural matte foundation for every skin tone. Create a gorgeous matte finish that looks positively airbrushed with this creamy, lightweight liquid foundation.
+                    {product.Description}
                 </Text>
             </View>
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>

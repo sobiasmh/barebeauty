@@ -9,6 +9,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import categories from '../const/categories';
 import { color } from 'react-native-reanimated';
 import prod from '../const/prod';
+
+import baseURL from '../../assets/common/baseURL';
+import axios from 'axios';
+
 export default ({ navigation }) => {
   
   const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
@@ -16,6 +20,18 @@ export default ({ navigation }) => {
 
   const [search, setSearch] = useState('');
   const [filtered, setFilterted] = useState('');
+  const [listings, setlistings] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${baseURL}products`)
+    .then((res)=>{
+      console.log(res.data);
+      setlistings(res.data);
+    })
+    return()=>{
+      setlistings([])
+    };
+  }, []);
 
   const updateSearch = (search) => {
     const d = categories.filter((item) => {
@@ -76,7 +92,7 @@ export default ({ navigation }) => {
    return(
     <FlatList
     style={{ marginBottom: 80, width: '100%' }}
-    data={filtered.length > 0 ? filtered : prod}
+    data={filtered.length > 0 ? filtered : listings}
     horizontal
     showsHorizontalScrollIndicator={false}
     renderItem={({ item }) => {
@@ -85,10 +101,10 @@ export default ({ navigation }) => {
           <View style={styles.carts}>
             <Image
               style={styles.productImg}
-              source={item.image}
+              source={{uri: item.Img}}
             />
             <View>
-              <Text style={styles.prdtext1}>{item.name}</Text>
+              <Text style={styles.prdtext1}>{item.Title}</Text>
             </View>
             
           </View>
