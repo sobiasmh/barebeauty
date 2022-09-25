@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext,useCallback } from 'react';
 import { StyleSheet, TextInput,Text, View ,ImageBackground, TouchableOpacity,ScrollView,Image,FlatList, Button} from 'react-native';
+
 
 import {createStackNavigator} from '@react-navigation/stack';
 import COLORS from '../const/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import StarRating from 'react-native-star-rating';
 import prod from '../const/prod';
+import Toast from 'react-native-toast-message';
 
 import baseURL from '../../assets/common/baseURL';
 import axios from 'axios';
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector, useDispatch} from 'react-redux';
 
+import {
+  addWishList,removeWishList, addCart,getCart
+ 
+} from '../../Redux/Actions/ProductAction';
 
 export default ({ navigation ,route}) => {
     const [search, setSearch] = useState('');
@@ -86,14 +94,14 @@ export default ({ navigation ,route}) => {
                      <View style={styles.carts}>
                      <Image
               style={styles.productImg}
-              source={{uri: item.Img}}
+              source={{uri: item.images[0].filePath}}
             />
                        
                        <View>
-                         <Text style={styles.prdtext1}>{item.Title}</Text>
+                         <Text style={styles.prdtext1}>{item.name}</Text>
                        </View>
                        <View style={styles.row}>
-                         <Text style={styles.prdtext2}>Rs {item.Price}</Text>
+                         <Text style={styles.prdtext2}>Rs {item.price}</Text>
            
                          <TouchableOpacity
                            style={{
@@ -129,14 +137,132 @@ export default ({ navigation ,route}) => {
 
     }
     const DetailScreen = ({route}) =>{
+      const dispatch = useDispatch();
+      const {user} = useSelector(state => state.user);
+      const {wishlistData} = useSelector(state => state.wishList);
+
       const {product} = route.params;
-      const [getNumber, setNumber] = useState(1);
+      const [quantity, setquantity] = useState(1);
       const [selectedStar,starCount] = useState(2)
       const onStarRatingPress=(rating)=> {
         
           starCount(rating)
        
       }
+      const[click, setclick] = useState(false)
+      const [data, setData] = useState('')
+
+      const [cart, setCart] = useState(false);
+      const [cartdata, setCartData] = useState();
+      const {cartData} = useSelector(state => state.cart);
+     
+     
+      let Img ="yo"
+      // decreaseQuantity handler
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setquantity(quantity - 1);
+    }
+  };
+
+  // increaseQuantity handler
+  const increaseQuantity = () => {
+    if (route.params?.product.Stock - 1 < quantity) {
+      Toast.show({
+        topOffset: 60,
+        type: "error",
+        text1:  `${route.params?.product.name} out of stock.`,
+      });
+    } else {
+      setquantity(quantity + 1);
+    }
+  };
+
+      const wishListHandler = () =>{
+        setclick(true)
+        console.log(user._id)
+        console.log(data)
+
+        dispatch(
+          addWishList(
+            route.params?.product.name,
+            route.params?.product.price,
+            Img,
+            user._id,
+            route.params?.product._id,
+          ),
+        );
+        Toast.show({
+          topOffset: 60,
+          type: "success",
+          text1:  `${route.params?.product.name} Added to wishlist`,
+        });
+  
+      };
+      const removeWishlistData = (data) =>{
+        setclick(false)
+        let id = data;
+        dispatch(removeWishList(id))
+        Toast.show({
+          topOffset: 60,
+          type: "success",
+          text1:  `${route.params?.product.name} removed from wishlist`,
+        });
+  
+      }
+
+       // addToCartHandler
+  const addToCartHandler = async () => {
+    await dispatch(
+      addCart(
+        route.params?.product.name,
+        quantity,
+        Img,
+        route.params?.product.price,
+        user._id,
+        route.params?.product._id,
+        route.params?.product.Stock,
+      ),
+    );
+    Toast.show({
+      topOffset: 60,
+      type: "success",
+      text1:  `${route.params?.product.name} added to cart successfully`,
+    });
+  };
+
+  // cartAlreadyAdded handler
+  const cartAlreadyAdded = () => {
+    Toast.show(
+      route.params?.product.Stock === 0
+        ? `${route.params?.product.name} out of stock`
+        : `${route.params?.product.name} already have in cart`,
+      Toast.SHORT,
+      Toast.BOTTOM,
+  );
+  };
+
+      useEffect(() => {
+        if (wishlistData && wishlistData.length > 0) {
+          wishlistData.map(data => {
+            setData(data);
+            if (data.productId === route.params?.product._id) {
+              setclick(true);
+            }
+          });
+        }
+        if (cartData && cartData.length > 0) {
+          cartData.map(data => {
+            setCartData(data);
+            if (data.productId === route.params?.product._id) {
+              setCart(true);
+            }
+          });
+        }
+        
+        dispatch(getCart());
+
+      }, [wishlistData, cartData]);
         return(
           <View style={styles.container}>
           <ScrollView
@@ -148,10 +274,10 @@ export default ({ navigation ,route}) => {
               />
             </View>
               <View>
-                <Text style={{fontSize:25, fontWeight:"bold", marginLeft:14}}>{product.Title}</Text>
+                <Text style={{fontSize:25, fontWeight:"bold", marginLeft:14}}>{product.name}</Text>
               </View>
               <View>
-                <Text style={{fontSize:20, marginRight:17,fontWeight:"bold", marginLeft:14}}>Rs. {product.Price}</Text>
+                <Text style={{fontSize:20, marginRight:17,fontWeight:"bold", marginLeft:14}}>Rs. {product.price}</Text>
               </View>
               <View style={{flexDirection:"row", justifyContent:"flex-start", marginTop:5, marginLeft:14}}>
 
@@ -165,16 +291,42 @@ export default ({ navigation ,route}) => {
         fullStarColor={'#fcba03'}        
         selectedStar={(rating) => {onStarRatingPress(rating)}}
       />
+      
               </View>
               <View style={{marginLeft:10, marginBottom:10}}>
                 <Text style={{fontSize:17}}>{selectedStar}</Text>
                 </View>
+                <View style={{justifyContent:"flex-end", flexDirection:"row-reverse", marginRight: 180}}>
+                    {click? (
+                    <Icons
+                      name="heart"
+                      size={25}
+                      color={COLORS.primary}
+                      backgroundColor= {COLORS.white}
+                      onPress={() => {removeWishlistData(data._id)
+                        console.log(data._id)
+                      }}
+                    /> 
+                    ) : (
+                      <Icons
+                      name="heart-outline"
+                      size={25}
+                      color={COLORS.primary}
+                      backgroundColor= {COLORS.white}
+                      onPress={() => {wishListHandler()
+                      }}
+                    /> 
+                    )
+              }
+                             
+                  </View>
               </View>
               
               <View style={{ padding: 4, marginTop:5,margin:14,alignContent: 'center' }}>
+                
                 <Text
                   style={{ backgroundColor: COLORS.lightprimary, padding: 8,borderRadius:10 }}>
-                    {product.Description}
+                    {product.description}
                 </Text>
             </View>
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>
@@ -182,25 +334,57 @@ export default ({ navigation ,route}) => {
                 <TouchableOpacity
                 style={styles.incrementButtonStyle}
                   
-                  onPress={()=>{setNumber(getNumber - 1)}}>
+                  onPress={()=>{decreaseQuantity()}}>
                   <Text style={styles.incrementtextStyle}>-</Text>
                 </TouchableOpacity>
-                <Text style={{fontSize:15, padding:4, textAlign:"center"}}>{getNumber}</Text>
+                <Text style={{fontSize:15, padding:4, textAlign:"center"}}>{quantity}</Text>
                 <TouchableOpacity
                 style={styles.incrementButtonStyle}
                   
-                  onPress={()=>{setNumber(getNumber+1)}}>
+                  onPress={()=>{increaseQuantity()}}>
                   <Text style={styles.incrementtextStyle}>+</Text>
                 </TouchableOpacity>
               </View>
+
+              {cart === true || route.params?.product.Stock === 0 ? (
+
               <View>
               <TouchableOpacity
-                style={styles.addtoCart}
+                style={{
+                  backgroundColor:"#000",
+                  height:33,
+                  width: 150,
+                  borderRadius:10,
+                  marginRight:18
+                }}
                   
-                  onPress={()=>{}}>
+                  onPress={()=>{cartAlreadyAdded()}}>
                   <Text style={styles.adcarttextStyle}>ADD TO CART</Text>
                 </TouchableOpacity>
               </View>
+
+
+              ) : (
+
+                <View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor:COLORS.primary,
+                    height:33,
+                    width: 150,
+                    borderRadius:10,
+                    marginRight:18
+                  }}
+                    
+                    onPress={()=>{addToCartHandler()
+                    console.log("no")}}>
+                    <Text style={styles.adcarttextStyle}>ADD TO CART</Text>
+                  </TouchableOpacity>
+                </View>
+
+              )}
+
+
             </View>
             
           </ScrollView>
@@ -208,6 +392,8 @@ export default ({ navigation ,route}) => {
         )
 
     }
+
+
   
         return(
             <Stack.Navigator initialRouteName="MakeupStore">
@@ -223,6 +409,7 @@ export default ({ navigation ,route}) => {
                 title: 'Product',
                 headerStyle:{height:50},
                 headerShadowVisible:false,
+               
               
               }}
             />
@@ -332,14 +519,7 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
         marginLeft:18
       },
-      addtoCart:{
-        backgroundColor:COLORS.primary,
-        height:33,
-        width: 150,
-        borderRadius:10,
-        marginRight:18
-
-      },
+      
       adcarttextStyle:{
         color:COLORS.white, 
         fontSize:15,

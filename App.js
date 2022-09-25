@@ -6,10 +6,10 @@ import Home from './components/screens/Home';
 import Start from './components/screens/Start';
 import BottomNavigator from './components/navigation/BottomNavigator';
 
+import { Provider } from 'react-redux';
 import Toast from 'react-native-toast-message';
 // context api
-import Auth from './context/store/Auth';
-
+import Store from './Redux/Store/Store';
 export default function App() {
 
   
@@ -32,12 +32,12 @@ const Stack = createNativeStackNavigator();
   };
 
   return (
-    <Auth>
+      <Provider store={Store}> 
       <NavigationContainer>
         <StackNav />
         <Toast refs={(refs)=> Toast.setRef(refs)}/>
       </NavigationContainer>
-    </Auth>
+      </Provider>
   );
 }
 

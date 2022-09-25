@@ -49,14 +49,15 @@ router.post(`/register`, async (req, res)=>{
 })
 
 router.post(`/login`, async (req,res)=>{
+    const {userEmail,userPassword}=req.body
 
-    const user = await Users.findOne({getuseremail: req.body.getuseremail})
+    const user = await Users.findOne({userEmail})
     const secret = process.env.JWT_SECRET;
 
     if(!user){
         return res.status(400).send('The user not found');
     }
-    if(user && ( bcrypt.compareSync(req.body.getuserPassword, user.userPassword))){
+    if(user && ( bcrypt.compareSync(userPassword, user.userPassword))){
        const token = jwt.sign(
         {
             userId : user.id,

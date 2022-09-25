@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux'
+import { StyleSheet, Text, TextInput, View, Button, ImageBackground, TouchableOpacity, ScrollView,SafeAreaView } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -15,62 +14,192 @@ import baseURL from '../../assets/common/baseURL';
 import axios from 'axios';
 import Error from '../const/error';
 import UserProfile from './UserProfile';
+import {useDispatch, useSelector} from 'react-redux';
 
-//Context
-import AuthGlobal from "../../context/store/AuthGlobal";
-import { loginUser } from '../../context/actions/auth_actions';
+import {
+  userLogin, register
+
+} from '../../Redux/Actions/UserAction';
 
 
 export default ({ navigation }) => {
 
+  const dispatch = useDispatch();
 
 
 
   const Stack = createStackNavigator();
+  const StartPage = (props)=>{
+    const image = {
+      uri: 'https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d59ded149741425.62ecc1e8b329d.jpg',
+    };
+  
+    return (
+      <View style={styles.container}>
+        <View>
+          <ImageBackground
+            source={image}
+            resizeMode="cover"
+            style={{ height: 700,
+              width: 400,}}>
+            <View style={{ flexDirection: 'column' }}>
+              <View>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 38,
+                    marginTop: 430,
+                    marginLeft: 30,
+                    fontWeight: 'bold',
+                    textAlign: 'left',
+                  }}>
+                  Let's Get Started
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 19,
+                    marginLeft: 30,
+                    textAlign: 'left',
+                  }}>
+                  Register now to experience the world of beauty and shop amazing makeup
+                  products!
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#F2357B',
+                    color: '#FFFFFF',
+                    borderColor: '#c21b59',
+                    height: 45,
+                    width: 120,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    marginTop: 35,
+                    marginBottom: 25,
+                  }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    props.navigation.navigate('StartScreen')
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      alignItems: 'center',
+                      padding: 9,
+                      marginLeft: 19,
+                      fontSize: 15,
+                    }}>
+                    Login In
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#fffffff',
+                    color: '#FFFFFF',
+                    borderColor: '#c21b59',
+                    height: 45,
+                    width: 120,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    marginTop: 35,
+                    marginBottom: 25,
+                  }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    navigation.navigate('RegisterScreen')
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      alignItems: 'center',
+                      padding: 9,
+                      marginLeft: 19,
+                      fontSize: 15,
+                    }}>
+                    Sign Up
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ImageBackground>
+        </View>
+      </View>
+    );
+  }
 
   const StartScreen = (props) => {
-    const context = useContext(AuthGlobal)
-    const [getuseremail, setuseremail] = useState("")
-    const [getuserPassword, setuserPassword] = useState("")
-    const [error, setError] = useState("")
+    const image = {
+      uri: 'https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/28811c125493255.611a9f54dc464.jpg',
+    };
+    const [email, setuseremail] = useState("")
+    const [password, setuserPassword] = useState("")
+    const {error, isAuthenticated} = useSelector(state => state.user);
 
+     const handleSubmit = () => {
+      dispatch(userLogin(email, password));
+    }
     useEffect(() => {
+      if (error) {
 
-      if (context.stateUser.isAuthenticated === true) {
+        Toast.show({
+          topOffset: 60,
+          type: "error",
+          text1: "Something went wrong",
+          text2: "Please try again"
+        });
+      }
+      if (isAuthenticated) {
+        Toast.show({
+          topOffset: 60,
+          type: "success",
+          text1: "You're Successfully Logged In",
+          text2: ".",
+        });
         props.navigation.navigate("UserProfile")
       }
+    }, [dispatch, error, isAuthenticated]);
+  
 
-    }, [context.stateUser.isAuthenticated])
-
-
-    const handleSubmit = () => {
-      const user = {
-        getuseremail,
-        getuserPassword
-      }
-      if (getuseremail === "" || getuserPassword === "") {
-        setError("Please fill in your credentials")
-      }
-      else {
-        loginUser(user, context.dispatch)
-      }
-    }
+   
 
 
     return (
       <View style={styles.container}>
-        <View style={styles.circle}>
-          <ImageBackground source={image} resizeMode="cover" style={styles.backimg}>
-          </ImageBackground>
-        </View>
-        <Text style={styles.text3}>BareBeauty.</Text>
+        <ImageBackground
+            source={require('../../assets/sketch.png')}
+            resizeMode="cover"
+            style={{alignSelf:"stretch", flex:1, width:null, height:null }}>
+            <View style={{marginTop:80}}>
+        <View>
+        <Text style={{marginTop: 15,
+    fontSize: 32,
+    fontWeight: "bold",
+    marginRight:100,
+    marginLeft:30
+  }}>It's you again.</Text>
+        <Text style={{
+          marginTop: 15,
+          fontSize: 15,
+          marginRight:100,
+          marginLeft:30,
+          color:"grey"
+        }}>Welcome back! Please login to continue.</Text>
+       
+</View>
 
         <View style={{ width: '100%' }}>
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
               onChangeText={setuseremail}
-              placeholder="Enter Email"
+              placeholder="Email address"
               placeholderTextColor="#8b9cb5"
               autoCapitalize="none"
               keyboardType="email-address"
@@ -83,7 +212,7 @@ export default ({ navigation }) => {
             <TextInput
               style={styles.inputStyle}
               onChangeText={setuserPassword}
-              placeholder="Enter Password" //12345
+              placeholder="Password" //12345
               placeholderTextColor="#8b9cb5"
               keyboardType="default"
               blurOnSubmit={false}
@@ -106,7 +235,7 @@ export default ({ navigation }) => {
             style={styles.buttonStyle}
             activeOpacity={0.5}
             onPress={() => { handleSubmit() }}>
-            <Text style={styles.buttonTextStyle}>Sign In</Text>
+            <Text style={styles.buttonTextStyle}>Log In</Text>
           </TouchableOpacity>
           <View style={{ alignContent: 'center' }}>
             <Text
@@ -116,11 +245,15 @@ export default ({ navigation }) => {
             </Text>
           </View>
         </View>
+        </View>
+        </ImageBackground>
       </View>
     )
   }
 
   const ForgotPasswordScreen = () => {
+    const {loading, error, message} = useSelector(state => state.forgotPassword);
+
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Change Password</Text>
@@ -196,51 +329,48 @@ export default ({ navigation }) => {
     )
   }
   const RegisterScreen = (props) => {
+
+    const {error} = useSelector(state => state.user);
+
     const [getname, setname] = useState("")
     const [getemail, setemail] = useState("")
     const [getPassword, setPassword] = useState("")
     const [getPhonenumber, setPhonenumber] = useState("")
-    const [error, setError] = useState("")
 
-    const register = () => {
-      if (getname === '' || getemail === '' || getPassword === '' || getPhonenumber === '') {
-        setError('Please fill in the form correctly')
-      }
-      else {
-        let user = {
-          userName: getname,
-          userEmail: getemail,
-          userPassword: getPassword,
-          userPhoneNumber: getPhonenumber,
-          Role: 'user'
-        };
+    useEffect(() => {
+      if (error) {
+        Toast.show({
+          topOffset: 60,
+          type: "error",
+          text1: 'Something went wrong',
+          text2: "."
+        });
 
-        axios.post(`${baseURL}users/register`, user).then((res) => {
-          if (res.status == 201) {
-            console.log("hello")
-            Toast.show({
-              topOffset: 60,
-              type: "success",
-              text1: "You're Successfully Registered",
-              text2: "Please Login into your account",
-            });
-            setTimeout(() => {
-              props.navigation.navigate('StartScreen');
-            }, 500);
-          }
+      }         
+       
+      
+    }, [dispatch, error]);
+  
+    
 
-        })
-          .catch((error) => {
-            Toast.show({
-              topOffset: 60,
-              type: "error",
-              text1: "Something went wrong",
-              text2: "Please try again"
-            });
 
-          });
-      };
+    const registerUser = () => {
+     
+        dispatch(register(getname, getemail, getPassword));
+        Toast.show({
+          topOffset: 60,
+          type: "success",
+          text1: "You're Successfully Registered",
+          text2: "Please Login into your account",
+        });
+        setTimeout(() => {
+          props.navigation.navigate('StartScreen');
+        }, 500);
+       
+      
     }
+ 
+       
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Create an Account</Text>
@@ -299,20 +429,8 @@ export default ({ navigation }) => {
               returnKeyType="next"
             />
           </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={() => { }
-              }
-              placeholder="Confirm Password" //12345
-              placeholderTextColor="#8b9cb5"
-              keyboardType="default"
-              blurOnSubmit={false}
-              secureTextEntry={true}
-              underlineColorAndroid="#f000"
-              returnKeyType="next"
-            />
-          </View>
+          
+          
           <View>
             {error ? <Error message={error} /> : null}
           </View>
@@ -321,13 +439,13 @@ export default ({ navigation }) => {
           <TouchableOpacity
             style={styles.buttonStyle}
             activeOpacity={0.5}
-            onPress={() => { register() }}>
+            onPress={() => { registerUser() }}>
             <Text style={styles.buttonTextStyle}>Sign Up</Text>
           </TouchableOpacity>
           <View style={{ alignContent: 'center' }}>
             <Text
               style={styles.passTextStyle}
-              onPress={() => navigation.navigate('StartScreen')}>
+              onPress={() => props.navigation.navigate('StartScreen')}>
               Already have an Account? Sign in
             </Text>
           </View>
@@ -341,7 +459,12 @@ export default ({ navigation }) => {
 
 
   return (
-    <Stack.Navigator initialRouteName="StartScreen">
+    <Stack.Navigator initialRouteName="StartPage">
+    <Stack.Screen
+    name="StartPage"
+    component={StartPage}
+    options={{ headerShown: false }}
+  />
       <Stack.Screen
         name="StartScreen"
         component={StartScreen}
@@ -433,15 +556,21 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 1,
     borderColor: '#dadae8',
+    borderRadius:10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 1,
   },
 
   SectionStyle: {
     flexDirection: 'row',
-    height: 40,
+    height: 47,
     marginTop: 20,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
+    
   },
 
   buttonStyle: {
@@ -449,12 +578,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: '#FFFFFF',
     borderColor: '#7DE24E',
-    height: 40,
+    borderRadius:10,
+    height: 45,
     alignItems: 'center',
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
     marginBottom: 25,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 5,
+    
   },
   buttonTextStyle: {
     color: '#FFFFFF',
@@ -462,7 +595,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   passTextStyle: {
-    color: 'black',
+    color: 'grey',
     textAlign: 'center',
     fontSize: 14,
     alignSelf: 'center',

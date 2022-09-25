@@ -21,6 +21,7 @@ const productRouter = require('./routers/productRouter');
 const usersRouter = require('./routers/usersRouter');
 const ordersRouter = require('./routers/ordersRouter');
 const categoryRouter = require('./routers/categoryRouter');
+const wishListRouter = require('./routers/wishListRouter');
 
 const api = process.env.API_URL;
 
@@ -29,6 +30,7 @@ app.use(`${api}/products`, productRouter);
 app.use(`${api}/users`, usersRouter);
 app.use(`${api}/orders`, ordersRouter);
 app.use(`${api}/categories`, categoryRouter);
+app.use(`${api}/wishlists`, wishListRouter);
 
 
 
