@@ -20,7 +20,7 @@ export const userLogin = (email, password) => async dispatch => {
         payload: data.user,
       });
     } catch (error) {
-        console.log(error)
+        // console.log(error)
       dispatch({
         type: 'userLoginFalse',
         payload: error.response.data.message,
@@ -64,6 +64,25 @@ export const register = (getname, getemail, getPassword) => async dispatch => {
 
     dispatch({
       type: 'userCreateFail',
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// delete account
+export const deleteAccount = id => async dispatch => {
+  try {
+   
+    const {data} = await axios.delete(`${baseURL}user/deleteAccount/${id}`);
+    dispatch({
+      type: 'deleteAccountSuccess',
+      payload: data,
+    });
+  } catch (error) {
+    console.log(error)
+
+    dispatch({
+      type: 'deleteAccountFail',
       payload: error.response.data.message,
     });
   }

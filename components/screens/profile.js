@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ImageBackground, TouchableOpacity, ScrollView,SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Button, ImageBackground, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import COLORS from '../const/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
-import { set } from 'react-native-reanimated';
+import { clockRunning, set } from 'react-native-reanimated';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Toast from 'react-native-toast-message';
@@ -14,12 +14,13 @@ import baseURL from '../../assets/common/baseURL';
 import axios from 'axios';
 import Error from '../const/error';
 import UserProfile from './UserProfile';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   userLogin, register
 
 } from '../../Redux/Actions/UserAction';
+import { ToastAndroid } from 'react-native';
 
 
 export default ({ navigation }) => {
@@ -29,26 +30,28 @@ export default ({ navigation }) => {
 
 
   const Stack = createStackNavigator();
-  const StartPage = (props)=>{
+  const StartPage = (props) => {
     const image = {
       uri: 'https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d59ded149741425.62ecc1e8b329d.jpg',
     };
-  
+
     return (
       <View style={styles.container}>
         <View>
           <ImageBackground
             source={image}
             resizeMode="cover"
-            style={{ height: 700,
-              width: 400,}}>
+            style={{
+              height: "100%",
+              width: 400,
+            }}>
             <View style={{ flexDirection: 'column' }}>
               <View>
                 <Text
                   style={{
                     color: 'white',
                     fontSize: 38,
-                    marginTop: 430,
+                    marginTop: 490,
                     marginLeft: 30,
                     fontWeight: 'bold',
                     textAlign: 'left',
@@ -140,119 +143,143 @@ export default ({ navigation }) => {
     };
     const [email, setuseremail] = useState("")
     const [password, setuserPassword] = useState("")
-    const {error, isAuthenticated} = useSelector(state => state.user);
+    const { error, isAuthenticated } = useSelector(state => state.user);
+    const handleSubmit = () => {
+      if (email == '' || password == '') {
+        Toast.show({
+          topOffset: 60,
+          type: "error",
+          text1: "Please fill the form",
+        });
 
-     const handleSubmit = () => {
-      dispatch(userLogin(email, password));
+      }
+      if (email != '' && password != '') {
+        dispatch(userLogin(email, password));
+      }
+
     }
+
     useEffect(() => {
+      console.log('in here')
+
       if (error) {
+        dispatch({ type: 'clearErrors' });
 
         Toast.show({
           topOffset: 60,
           type: "error",
-          text1: "Something went wrong",
+          text1: `${error}`,
           text2: "Please try again"
         });
+
       }
       if (isAuthenticated) {
+        dispatch({ type: 'clearErrors' });
+
         Toast.show({
           topOffset: 60,
           type: "success",
           text1: "You're Successfully Logged In",
           text2: ".",
         });
+        setuseremail('')
+        setuserPassword('')
         props.navigation.navigate("UserProfile")
-      }
-    }, [dispatch, error, isAuthenticated]);
-  
 
-   
+      }
+      }, [error, isAuthenticated]);
+    // }, []);
+
+
+
+
 
 
     return (
       <View style={styles.container}>
         <ImageBackground
-            source={require('../../assets/sketch.png')}
-            resizeMode="cover"
-            style={{alignSelf:"stretch", flex:1, width:null, height:null }}>
-            <View style={{marginTop:80}}>
-        <View>
-        <Text style={{marginTop: 15,
-    fontSize: 32,
-    fontWeight: "bold",
-    marginRight:100,
-    marginLeft:30
-  }}>It's you again.</Text>
-        <Text style={{
-          marginTop: 15,
-          fontSize: 15,
-          marginRight:100,
-          marginLeft:30,
-          color:"grey"
-        }}>Welcome back! Please login to continue.</Text>
-       
-</View>
+          source={require('../../assets/sketch.png')}
+          resizeMode="cover"
+          style={{ alignSelf: "stretch", flex: 1, width: null, height: null }}>
+          <View style={{ marginTop: 80 }}>
+            <View>
+              <Text style={{
+                marginTop: 15,
+                fontSize: 32,
+                fontWeight: "bold",
+                marginRight: 100,
+                marginLeft: 30
+              }}>It's you again.</Text>
+              <Text style={{
+                marginTop: 15,
+                fontSize: 15,
+                marginRight: 100,
+                marginLeft: 30,
+                color: "grey"
+              }}>Welcome back! Please login to continue.</Text>
 
-        <View style={{ width: '100%' }}>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={setuseremail}
-              placeholder="Email address"
-              placeholderTextColor="#8b9cb5"
-              autoCapitalize="none"
-              keyboardType="email-address"
+            </View>
 
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={setuserPassword}
-              placeholder="Password" //12345
-              placeholderTextColor="#8b9cb5"
-              keyboardType="default"
-              blurOnSubmit={false}
-              secureTextEntry={true}
-              underlineColorAndroid="#f000"
-            />
-          </View>
-          <View>
-            {error ? <Error message={error} /> : null}
-          </View>
-          <View style={{ flexDirection: 'row-reverse', paddingRight: 10 }}>
-            <Text
-              style={styles.passTextStyle}
-              onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-              Forgot Password?
-            </Text>
-          </View>
+            <View style={{ width: '100%' }}>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  value={email}
+                  onChangeText={(email) => setuseremail(email)}
+                  placeholder="Email address"
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  clearButtonMode='always'
 
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            activeOpacity={0.5}
-            onPress={() => { handleSubmit() }}>
-            <Text style={styles.buttonTextStyle}>Log In</Text>
-          </TouchableOpacity>
-          <View style={{ alignContent: 'center' }}>
-            <Text
-              style={styles.passTextStyle}
-              onPress={() => navigation.navigate('RegisterScreen')}>
-              Don't have an Account? Register Now
-            </Text>
+                  underlineColorAndroid="#f000"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(password) => setuserPassword(password)}
+                  value={password}
+                  placeholder="Password" //12345
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="default"
+                  blurOnSubmit={false}
+                  secureTextEntry={true}
+                  underlineColorAndroid="#f000"
+                />
+              </View>
+
+              <View style={{ flexDirection: 'row-reverse', paddingRight: 10 }}>
+                <Text
+                  style={styles.passTextStyle}
+                  onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+                  Forgot Password?
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => { handleSubmit() }}>
+                <Text style={styles.buttonTextStyle}>Log In</Text>
+              </TouchableOpacity>
+              <View style={{ alignContent: 'center' }}>
+                <Text
+                  style={styles.passTextStyle}
+                  onPress={() => navigation.navigate('RegisterScreen')}>
+                  Don't have an Account? Register Now
+                </Text>
+              </View>
+            </View>
           </View>
-        </View>
-        </View>
         </ImageBackground>
       </View>
     )
   }
 
   const ForgotPasswordScreen = () => {
-    const {loading, error, message} = useSelector(state => state.forgotPassword);
+    const { loading, error, message } = useSelector(state => state.forgotPassword);
 
     return (
       <View style={styles.container}>
@@ -264,7 +291,7 @@ export default ({ navigation }) => {
             <TextInput
               style={styles.inputStyle}
               onChangeText={() => { }
-}
+              }
               placeholder="Enter Email"
               placeholderTextColor="#8b9cb5"
               autoCapitalize="none"
@@ -330,47 +357,56 @@ export default ({ navigation }) => {
   }
   const RegisterScreen = (props) => {
 
-    const {error} = useSelector(state => state.user);
+    const { error, success } = useSelector(state => state.user);
 
     const [getname, setname] = useState("")
     const [getemail, setemail] = useState("")
     const [getPassword, setPassword] = useState("")
     const [getPhonenumber, setPhonenumber] = useState("")
+    const [geterror, seterror] = useState(error)
+
 
     useEffect(() => {
       if (error) {
         Toast.show({
           topOffset: 60,
           type: "error",
-          text1: 'Something went wrong',
-          text2: "."
+          text1: `${error}`,
         });
+        // dispatch({ type: 'clearErrors' });
+      }
+    }, [error]);
 
-      }         
-       
-      
-    }, [dispatch, error]);
-  
-    
+    useEffect(() => {
 
-
-    const registerUser = () => {
-     
-        dispatch(register(getname, getemail, getPassword));
+      if (success) {
+        // dispatch({ type: 'clearErrors' });
         Toast.show({
           topOffset: 60,
           type: "success",
           text1: "You're Successfully Registered",
-          text2: "Please Login into your account",
+          text2: "Please Login into your account"
         });
-        setTimeout(() => {
-          props.navigation.navigate('StartScreen');
-        }, 500);
-       
-      
-    }
- 
-       
+        props.navigation.replace('StartScreen');
+        // setTimeout(() => {
+        //   props.navigation.navigate('StartScreen');
+        // }, 500);
+      }
+    }, [success])
+
+
+    const registerUser = () => {
+
+      dispatch(register(getname, getemail, getPassword));
+
+    };
+
+
+
+
+
+
+
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Create an Account</Text>
@@ -429,11 +465,9 @@ export default ({ navigation }) => {
               returnKeyType="next"
             />
           </View>
-          
-          
-          <View>
-            {error ? <Error message={error} /> : null}
-          </View>
+
+
+
 
 
           <TouchableOpacity
@@ -460,11 +494,11 @@ export default ({ navigation }) => {
 
   return (
     <Stack.Navigator initialRouteName="StartPage">
-    <Stack.Screen
-    name="StartPage"
-    component={StartPage}
-    options={{ headerShown: false }}
-  />
+      <Stack.Screen
+        name="StartPage"
+        component={StartPage}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="StartScreen"
         component={StartScreen}
@@ -556,11 +590,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 1,
     borderColor: '#dadae8',
-    borderRadius:10,
+    borderRadius: 10,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 0,
   },
 
   SectionStyle: {
@@ -570,7 +604,7 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
-    
+
   },
 
   buttonStyle: {
@@ -578,7 +612,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: '#FFFFFF',
     borderColor: '#7DE24E',
-    borderRadius:10,
+    borderRadius: 10,
     height: 45,
     alignItems: 'center',
     marginLeft: 35,
@@ -587,7 +621,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    
+
   },
   buttonTextStyle: {
     color: '#FFFFFF',

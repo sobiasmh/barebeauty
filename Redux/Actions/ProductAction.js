@@ -11,53 +11,53 @@ export const addWishList =
     productImage,
     userId,
     productId,
-    
+
   ) =>
-  
-  async dispatch => {
-    
-    
-    try {
-        
-      dispatch({
-        type: 'addWishListRequest',
-      });
-      const {data} = await axios.post(
-        `${baseURL}wishlist/addToWishlist`,
-        {
+
+    async dispatch => {
+
+
+      try {
+
+        dispatch({
+          type: 'addWishListRequest',
+        });
+        const { data } = await axios.post(
+          `${baseURL}wishlist/addToWishlist`,
+          {
             productName,
             productPrice,
             productImage,
             userId,
             productId,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
           },
-        },
-      );
-      dispatch({
-        type: 'addWishListSuccess',
-        payload: data,
-      });
-    } catch (error) {
-      console.log(error)
-      dispatch({
-        type: 'addWishListFail',
-        payload: error.response.data.message,
-      });
-    }
-  };
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        dispatch({
+          type: 'addWishListSuccess',
+          payload: data,
+        });
+      } catch (error) {
+        console.log(error)
+        dispatch({
+          type: 'addWishListFail',
+          payload: error.response.data.message,
+        });
+      }
+    };
 
-  // get wishlist data
+// get wishlist data
 export const getWishList = () => async dispatch => {
 
   try {
     dispatch({
       type: 'getWishListRequest',
     });
-    const {data} = await axios.get(`${baseURL}wishlist/getwishlist`);
+    const { data } = await axios.get(`${baseURL}wishlist/getwishlist`);
     dispatch({
       type: 'getWishListSuccess',
       payload: data.wishlistData,
@@ -78,7 +78,7 @@ export const removeWishList = id => async dispatch => {
     dispatch({
       type: 'removeWishListRequest',
     });
-    const {data} = await axios.delete(`${baseURL}wishlist/removewishlist/${id}`);
+    const { data } = await axios.delete(`${baseURL}wishlist/removewishlist/${id}`);
     dispatch({
       type: 'removeWishListSuccess',
       payload: data,
@@ -102,32 +102,32 @@ export const addCart =
     productId,
     Stock,
   ) =>
-  async dispatch => {
-    try {
-      dispatch({
-        type: 'addCartRequest',
-      });
-      const {data} = await axios.post(`${baseURL}cart/addToCart`, {
-        productName,
-        quantity,
-        productImage,
-        productPrice,
-        userId,
-        productId,
-        Stock,
-      });
-      dispatch({
-        type: 'addCartSuccess',
-        payload: data,
-      });
-    } catch (error) {
-      dispatch({
-        type: 'addCartFail',
-        payload: error.response.data.message,
-      });
-      console.log(error.response.data.message);
-    }
-  };
+    async dispatch => {
+      try {
+        dispatch({
+          type: 'addCartRequest',
+        });
+        const { data } = await axios.post(`${baseURL}cart/addToCart`, {
+          productName,
+          quantity,
+          productImage,
+          productPrice,
+          userId,
+          productId,
+          Stock,
+        });
+        dispatch({
+          type: 'addCartSuccess',
+          payload: data,
+        });
+      } catch (error) {
+        dispatch({
+          type: 'addCartFail',
+          payload: error.response.data.message,
+        });
+        console.log(error.response.data.message);
+      }
+    };
 
 // get cart data
 export const getCart = () => async dispatch => {
@@ -135,7 +135,7 @@ export const getCart = () => async dispatch => {
     dispatch({
       type: 'getCartRequest',
     });
-    const {data} = await axios.get(`${baseURL}cart/getCart`);
+    const { data } = await axios.get(`${baseURL}cart/getCart`);
     dispatch({
       type: 'getCartSuccess',
       payload: data,
@@ -154,12 +154,13 @@ export const removeCart = id => async dispatch => {
     dispatch({
       type: 'removeCartRequest',
     });
-    const {data} = await axios.delete(`${baseURL}cart/removeCart/${id}`);
+    const { data } = await axios.delete(`${baseURL}cart/removeCart/${id}`);
     dispatch({
       type: 'removeCartSuccess',
       payload: data,
     });
   } catch (error) {
+    console.log(error)
     dispatch({
       type: 'removeCartFail',
       payload: error.response.data.message,
@@ -173,7 +174,7 @@ export const updateCart = (id, quantity) => async dispatch => {
     dispatch({
       type: 'updateCartRequest',
     });
-    const {data} = await axios.put(`${baseURL}cart/updateCart/${id}`, {
+    const { data } = await axios.put(`${baseURL}cart/updateCart/${id}`, {
       quantity,
     });
     dispatch({
@@ -181,6 +182,8 @@ export const updateCart = (id, quantity) => async dispatch => {
       payload: data,
     });
   } catch (error) {
+    console.log(error)
+
     dispatch({
       type: 'updateCartFail',
       payload: error.response.data.message,
@@ -199,10 +202,10 @@ export const createOrder = order => async dispatch => {
         'Content-Type': 'application/json',
       },
     };
-    const {data} = await axios.post(`${baseURL}order/newOrder`, order, config);
+    const { data } = await axios.post(`${baseURL}order/newOrder`, order, config);
     dispatch({
-        type: 'newOrderSuccess',
-        payload: data,
+      type: 'newOrderSuccess',
+      payload: data,
     })
     console.log(data);
   } catch (error) {

@@ -15,115 +15,196 @@ export default ({ navigation }) => {
                 <View style={styles.container}>
                   <ScrollView
                   showsVerticalScrollIndicator={false}>
+                    
+                     <View>
+                      <Text style={styles.text4}>Categories</Text>
+                    </View>
+                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                     <TouchableOpacity
                       style={{
-                        backgroundColor: '#8267BE',
-                        width: 299,
-                        height: 100,
+                        backgroundColor: '#FFDBA4',
+                        width: 160,
+                        height: 160,
+                        padding:19,
+                        marginRight:10,
                         borderRadius: 12,
                         marginBottom: 20,
                         marginTop: 20,
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
                       }}
                       onPress={() => navigation.navigate('AllMakeup', {n:"Face"})}>
-                      <View>
-                        <Text style={styles.text}>Face</Text>
-                      </View>
+
                       <View>
                         <Image
                           style={{
                             resizeMode: 'cover',
                             height: 100,
                             width: 100,
-                            marginLeft: 100,
-                            marginTop: 9,
+                            borderRadius:50
                           }}
-                          source={{uri: 'https://cdn-icons-png.flaticon.com/512/1940/1940922.png'}}
+                          source={{uri: 'https://i.pinimg.com/736x/5d/66/d2/5d66d2a48f7b07ce84c3e5904ec68e51.jpg'}}
                         />
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: '#A3E4DB',
-                        width: 299,
-                        height: 100,
-                        borderRadius: 12,
-                        marginBottom: 20,
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                      }}
-                      onPress={() => navigation.navigate('AllMakeup', {n:"Lips"})}>
                       <View>
-                        <Text style={styles.text}>Lips</Text>
+                        <Text style={styles.text}>Face</Text>
                       </View>
-                      <Image
-                        style={{
-                          resizeMode: 'cover',
-                          height: 100,
-                          width: 100,
-                          marginLeft: 100,
-                          marginTop: 9,
-                        }}
-                        source={{
-                          uri: 'https://cdn-icons-png.flaticon.com/512/2798/2798018.png',
-                        }}
-                      />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={{
-                        backgroundColor: '#F999B7',
-                        width: 299,
-                        height: 100,
+                        backgroundColor: '#905E96',
+                        width: 160,
+                        height: 160,
+                        padding:19,
+                        marginRight:10,
                         borderRadius: 12,
                         marginBottom: 20,
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
+                        marginTop: 20,
                       }}
                       onPress={() => navigation.navigate('AllMakeup', {n:"Eyes"})}>
+
+                      <View>
+                        <Image
+                          style={{
+                            resizeMode: 'cover',
+                            height: 100,
+                            width: 100,
+                            borderRadius:50
+                          }}
+                          source={{uri: 'https://cocorubyskin.com.au/wp-content/uploads/2016/09/middle-eastern-eye-makeup.jpg'}}
+                        />
+                      </View>
                       <View>
                         <Text style={styles.text}>Eyes</Text>
                       </View>
-                      <Image
-                        style={{
-                          resizeMode: 'cover',
-                          height: 100,
-                          width: 100,
-                          marginLeft: 100,
-                          marginTop: 9,
-                        }}
-                        source={{
-                          uri: 'https://cdn-icons-png.flaticon.com/512/3163/3163195.png',
-                        }}
-                      />
                     </TouchableOpacity>
+                    </View>
+
+
+                      <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                     <TouchableOpacity
                       style={{
-                        backgroundColor: '#2C272E',
-                        width: 299,
-                        height: 100,
+                        backgroundColor: '#8267BE',
+                        width: 160,
+                        height: 160,
+                        padding:19,
+                        marginRight:10,
                         borderRadius: 12,
                         marginBottom: 20,
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
+                        marginTop: 20,
                       }}
-                      onPress={() => navigation.navigate('AllMakeup', {n:"Skincare"})}>
+                      onPress={() => navigation.navigate('AllMakeup', {n:"Lips"})}>
+
                       <View>
-                        <Text style={styles.text}>Skin</Text>
+                        <Image
+                          style={{
+                            resizeMode: 'cover',
+                            height: 100,
+                            width: 100,
+                            borderRadius:50
+                          }}
+                          source={{uri: 'https://images.ctfassets.net/wlke2cbybljx/74ujAaQLh4pz64a6hM7gN4/85227282d4f00b281029d093ad300276/featuredimage_-_PT_ORIGINAL_LIGHT_SKIN_FINAL_copy_resized_1x1.jpg?fm=jpg'}}
+                        />
                       </View>
-                      <Image
-                        style={{
-                          resizeMode: 'cover',
-                          height: 100,
-                          width: 100,
-                          marginLeft: 100,
-                          marginTop: 9,
-                        }}
-                        source={{
-                          uri: 'https://cdn-icons-png.flaticon.com/512/3501/3501241.png',
-                        }}
-                      />
+                      <View>
+                        <Text style={styles.text}>Lips</Text>
+                      </View>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: '#A2B38B',
+                        width: 160,
+                        height: 160,
+                        padding:19,
+                        marginRight:10,
+                        borderRadius: 12,
+                        marginBottom: 20,
+                        marginTop: 20,
+                      }}
+                      onPress={() => navigation.navigate('AllMakeup', {n:"Skin Care"})}>
+
+                      <View>
+                        <Image
+                          style={{
+                            resizeMode: 'cover',
+                            height: 100,
+                            width: 100,
+                            borderRadius:50
+                          }}
+                          source={{uri: 'https://i.ytimg.com/vi/IILoSS_-Skc/maxresdefault.jpg'}}
+                        />
+                      </View>
+                      <View>
+                        <Text style={styles.text}>Skin Care</Text>
+                      </View>
+                    </TouchableOpacity>
+                   
+                    </View>
+
+
+
+                    <View>
+                      <Text style={styles.text4}>Brands</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: '#8267BE',
+                        margin:10
+                        }}
+                       onPress={() => navigation.navigate('AllMakeup', { n: 'Mayeblline' })}>
+            
+                        <View>
+                          <Image
+                            style={{
+                              resizeMode: 'cover',
+                              height: 120,
+                              width: "100%",
+                            }}
+                            source={{uri: 'https://allurebeauty.pk/pub/media/catalog/category/Maybelline.jpg'}}
+                          />
+                        </View>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                      style={{
+                        backgroundColor: '#8267BE',
+                        margin:10
+
+                        }}
+                       onPress={() => navigation.navigate('AllMakeup', { n: 'Elf' })}>
+            
+                        <View>
+                          <Image
+                            style={{
+                              resizeMode: 'cover',
+                              height: 120,
+                              width: "100%",
+                            }}
+                            source={{uri: 'https://static.wixstatic.com/media/774745_781c3dbd201b4bd29afb54aa4b522fd9~mv2.jpeg/v1/crop/x_0,y_0,w_1918,h_630/fill/w_976,h_321,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/989340.jpeg'}}
+                          />
+                        </View>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                      style={{
+                        backgroundColor: '#8267BE',
+                        margin:10
+
+                        }}
+                       onPress={() => navigation.navigate('AllMakeup', { n: 'Loreal' })}>
+            
+                        <View>
+                          <Image
+                            style={{
+                              resizeMode: 'cover',
+                              height: 120,
+                              width: "100%",
+                            }}
+                            source={{uri: 'https://www.makeup.co.nz/images/349590/loreal-article-banner.jpg'}}
+                          />
+                        </View>
+                      </TouchableOpacity>
+          
+                    
                   </ScrollView>
                 </View>
               
@@ -149,62 +230,18 @@ const styles = StyleSheet.create({
       text: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 27,
-        margin: 15,
+        fontSize: 24,
+        textAlign: 'center',
+        padding:3
+
       },
-      inputContainer: {
-        flex: 1,
-        height: 50,
-        borderRadius: 10,
-        flexDirection: 'row',
-        backgroundColor: "#E5E5E5",
-        alignItems: 'center',
-        paddingHorizontal: 20,
-      },
-      sortBtn: {
-        width: 50,
-        height: 50,
-        marginLeft: 10,
-        backgroundColor: COLORS.primary,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      carts: {
-        backgroundColor:"#f5dfe6",
-        borderRadius:10,
-        width: 147,
-        height: 190,
-        margin: 12,
-        padding: 5,
-        
-      },
-      row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        flexWrap: 'wrap',
-        flexBasis: '50%',
-      },
-      productImg: {
-        resizeMode: 'cover',
-        height: 100,
-        width: 100,
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        marginTop: 8,
-      },
-      prdtext1: {
-        fontWeight: 'bold',
-        fontSize: 15,
-        marginTop: 9,
-        marginLeft: 9,
-      },
-      prdtext2: {
-        fontWeight: 'bold',
-        fontSize: 15,
-        marginTop: 9,
-        marginLeft: 9,
+      
+      text4: {
+        fontSize: 24,
+        marginLeft: 14,
+        textAlign: "left",
+        fontWeight: "bold",
+        marginTop: 10,
       },
   });
   

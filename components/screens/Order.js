@@ -7,6 +7,8 @@ import { Dimensions,
     ToastAndroid,
     TouchableOpacity,
     FlatList,
+    Modal,
+    Pressable,
     View} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,9 +18,11 @@ import OrderSteps from './OrderSteps';
 import {useState} from 'react';
 import COLORS from '../const/colors';
 const {width} = Dimensions.get('window');
-import {createOrder} from '../../Redux/Actions/ProductAction';
+import Toast from 'react-native-toast-message';
 
-export default function Order({activeTab}) {
+import baseURL from '../../assets/common/baseURL';
+
+export default function Order({activeTab, navigation}) {
 const {cartData} = useSelector(state => state.cart);
   const {user} = useSelector(state => state.user);
   const [active, setActive] = useState(1);
@@ -28,13 +32,12 @@ const {cartData} = useSelector(state => state.cart);
   const [countryName, setCountryName] = useState('');
   const [cityName, setCityName] = useState('');
   const [pin, setPin] = useState('');
+  const [getId, setId] = useState()
 
-  const [subtotal, setSubtotal] = useState(0);
-  const [success, setSuccess] = useState(false);
 
-  const dispatch = useDispatch();
   const totalPrice = cartData.reduce((acc, curr) => acc + curr.productPrice*curr.quantity, 0);
 
+  
   const order = {
     shippingInfo: {
       address,
@@ -45,18 +48,28 @@ const {cartData} = useSelector(state => state.cart);
       phoneNo: phoneNumber,
 
     },
-    orderItems: cartData,
+    orderItems: cartData ,
     user: user._id,
     totalPrice: totalPrice,
-    shippingPrice: 200,
-    paymentInfo:{
-      id: "30000",
-      status:"Cash on Delivery"
-    }
+   
   };
   const confirmOrderHandler = () => {
-    if (cartData.length > 0) {
-      dispatch(createOrder(order))
+   
+    
+   
+    if (cartData?.length > 0) {
+      axios
+            .post(`${baseURL}order/newOrder`, order  
+            )
+            .then((res) => {
+                if (res.status == 201) {
+                  setId(res.data.trackigID)
+                  setActive(3)
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
   };
 
@@ -157,7 +170,7 @@ const {cartData} = useSelector(state => state.cart);
             backgroundColor:COLORS.primary,
             height:33,
             width: 150,
-            marginLeft: 170,
+            marginLeft: 200,
             elevation: 8,
             borderRadius: 10,
         }} onPress={()=>{shippingDetailsHandler()}}>
@@ -174,9 +187,9 @@ const {cartData} = useSelector(state => state.cart);
   }
   else if(active === 2){
     return(
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
       <OrderSteps activeTab={active} />
-
+      
       <View>
       <View style={styles.header}>
         <Text style={{fontSize: 25, fontWeight: 'bold'}}> Your Shipment Details</Text>
@@ -209,8 +222,9 @@ const {cartData} = useSelector(state => state.cart);
         <Text style={{color: '#333', fontWeight:"bold", fontSize: 20, textAlign:"left", margin:15}}>
           Your Cart Items
         </Text>
+        <View style={{height:"35%"}}>
         {cartData && cartData.length>0?(
-          <View>
+          
         <FlatList
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
@@ -243,13 +257,14 @@ const {cartData} = useSelector(state => state.cart);
         keyExtractor={(item, index) => index.toString()}
 
       />
-      </View>
+     
           ):(
             <View>
               <Text>Hi</Text>
             </View>
           )
         }
+         </View>
       </View>
 
         <View
@@ -270,11 +285,12 @@ const {cartData} = useSelector(state => state.cart);
           backgroundColor:COLORS.primary,
           height:33,
           width: 150,
-          marginLeft: 200,
+          marginLeft: 230,
           elevation: 8,
           borderRadius: 10,
 
-        }} onPress={()=>{confirmOrderHandler()}}>
+        }} onPress={()=>{confirmOrderHandler()
+          }}>
           <Text style={{
              color:COLORS.white, 
              fontSize:15,
@@ -284,16 +300,50 @@ const {cartData} = useSelector(state => state.cart);
           }}>Confirm Order</Text>
         </TouchableOpacity>
 
-        </ScrollView>
+        </View>
 
     );
   }
   else{
   return (
-    <View>
-      <Text>hi</Text>
-    
-     </View>
+    <View
+          style={{
+            marginTop:120,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image style={{
+            resizeMode: 'cover',
+            height: 250,
+            width: 250,
+            marginTop:200,
+
+          }}
+
+            source={{ uri: "https://cdni.iconscout.com/illustration/premium/thumb/order-confirmation-5365232-4500195.png" }} />
+
+          <Text style={{ color: '#333', fontSize: 20, textAlign: 'center', fontWeight:"bold" }}>
+           Your Order is Placed Successfully
+          </Text>
+          <Text style={{ color: '#333', fontSize: 20, textAlign: 'center', fontWeight:"bold" }}>
+           Your Trackig ID is : {getId}
+          </Text>
+          
+          <TouchableOpacity
+                  style={{
+                    backgroundColor: COLORS.primary,
+                    height: 33,
+                    width: 150,
+                    borderRadius: 10,
+                    marginRight: 18,
+                  }}
+
+                  onPress={() => {
+                    navigation.navigate('Cart')
+                  }}>
+                  <Text style={styles.adcarttextStyle}>Go Back</Text>
+                </TouchableOpacity>
+        </View>
    );
  }
 }
@@ -303,6 +353,7 @@ const {cartData} = useSelector(state => state.cart);
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
+  
         
       },
   OrderStepsMain: {
@@ -327,7 +378,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 1,
   },
 
   SectionStyle: {
@@ -356,5 +406,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 10,
     
+  },
+  adcarttextStyle: {
+    color: COLORS.white,
+    fontSize: 16,
+    padding: 4,
+    textAlign: "center",
+    fontWeight:"bold"
   },
 });

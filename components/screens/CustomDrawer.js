@@ -72,18 +72,7 @@ const CustomDrawer = props => {
         </View>
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="share-social-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                marginLeft: 5,
-              }}>
-              Tell a Friend
-            </Text>
-          </View>
-        </TouchableOpacity>
+        
         <TouchableOpacity onPress={() => {logOut()}} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="exit-outline" size={22} />

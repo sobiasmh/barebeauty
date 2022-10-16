@@ -1,21 +1,10 @@
-import React, { useState, useEffect, useContext,useCallback } from 'react';
-import { StyleSheet, View ,ImageBackground,Image, ActivityIndicator,TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { StyleSheet, View, VirtualizedList, ImageBackground, Image, ActivityIndicator, TouchableOpacity, SafeAreaView, FlatList, ScrollView } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useFocusEffect } from '@react-navigation/native';
 
-import baseURL from '../../assets/common/baseURL';
-import axios from 'axios';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import AuthGlobal from "../../context/store/AuthGlobal";
-import { logoutUser } from '../../context/actions/auth_actions';
-import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
-import CustomDrawer from './CustomDrawer';
 import COLORS from '../const/colors';
-import {useDispatch, useSelector} from 'react-redux';
-import {getWishList, getCart, removeCart, updateCart} from '../../Redux/Actions/ProductAction';
+import { useDispatch, useSelector } from 'react-redux';
+import {  removeCart, updateCart } from '../../Redux/Actions/ProductAction';
 
 
 
@@ -29,229 +18,263 @@ import {
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
-import { CardTitle } from '@rneui/base/dist/Card/Card.Title';
-import OrderSteps from './OrderSteps';
+
 
 
 const Cart = ({ navigation }) => {
   const dispatch = useDispatch();
-  const {wishlistData, error} = useSelector(state => state.wishList);
-  const {cartData} = useSelector(state => state.cart);
+  const { cartData } = useSelector(state => state.cart);
+  const [refreshFlatlist, setRefreshFlatList] = useState(false);
+  const [quantity, setquantity] = useState();
+  const [getcondition, setcondition] = useState(false);
 
+  // remove item from cart
+  const cartRemoveHandler = (index, id, name) => {
+
+      Toast.show({
+        topOffset: 60,
+        type: "success",
+        text1: `${name} removed from cart`,
+      });
+    dispatch(removeCart(id));
+    setcondition(true);
+   
+
+  };
+
+  // decreaseQuantity handler
+  const decreaseQuantity = (id) => {
+    if (quantity > 1) {
+      setquantity(quantity-1);
+      dispatch(updateCart(id, quantity-1));
+
+    }
+  };
+
+  // increaseQuantity handler
+  const increaseQuantity = (id, Stock) => {
+    if (Stock - 1 < quantity) {
+      Toast.show({
+        topOffset: 60,
+        type: "error",
+        text1: `${item.name} out of stock.`,
+      });
+    } else {
+      setquantity(quantity + 1);
+      console.log(quantity)
+      dispatch(updateCart(id, quantity + 1));
+
+    }
+  };
+
+ 
+
+  useEffect(() => {
+    setcondition(true)
+    if (cartData?.length > 0) {
+      cartData.map(item => {
+        setquantity(item.quantity);
+      });
+    }
+    setcondition(false)
+
+  }, [cartData, getcondition]);
+  if (getcondition) {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: 30,
+        }}>
+        <ActivityIndicator animating={true} color={COLORS.primary} />
   
-        
-          const [refreshFlatlist, setRefreshFlatList] = useState(false);
-          const [totalPrice, setTotalPrice] = useState(0);
-          const [quantity, setquantity] = useState(1);
-          // remove item from cart
-        const cartRemoveHandler = (key, id, name) => {
-          cartData.filter((i) => i.key !== key),
-      
-          Toast.show({
-            topOffset: 60,
-            type: "success",
-            text1:  `${name} removed from cart`,
-          });
-          dispatch(removeCart(id));
-          setRefreshFlatList(!refreshFlatlist)
-      
-        };
-      
-        // decreaseQuantity handler
-        const decreaseQuantity = (id) => {
-          if (quantity > 1) {
-            setquantity(quantity - 1);
-            dispatch(updateCart(id, quantity - 1));
-      
-          }
-        };
-      
-        // increaseQuantity handler
-        const increaseQuantity = (id, Stock) => {
-          if (Stock - 1 < quantity) {
-            Toast.show({
-              topOffset: 60,
-              type: "error",
-              text1:  `${item.name} out of stock.`,
-            });
-          } else {
-            setquantity(quantity + 1);
-            console.log(quantity)
-            dispatch(updateCart(id, quantity + 1));
-      
-          }
-        };
-      
-        useEffect(() => {
-          setTotalPrice(
-            cartData.reduce(
-              (total, item) => total + item.productPrice * item.quantity,
-              0,
-            ),
-          );
-          if (cartData.length > 0) {
-            cartData.map(item => {
-              setquantity(item.quantity);
-            });
-          }
-        }, [cartData, quantity]);
-      
-        
-          return(
-            <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
-              <View style={styles.header}>
-              <Icon name="cart" size={28} onPress={navigation.goBack} />
-              <Text style={{fontSize: 25, fontWeight: 'bold'}}> Cart</Text>
-            </View>
-            
-      
-            {cartData?.length > 0 ? (
-              <View>
-                <View>
-      
-              <FlatList
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{paddingBottom: 80}}
-              
+        <Text>Loading..</Text>
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
+      <View style={styles.header}>
+        <Icon name="cart" size={28} onPress={navigation.goBack} color={ COLORS.primary}
+/>
+        <Text style={{ fontSize: 25, fontWeight: 'bold', color: COLORS.primary
+ }}> Cart</Text>
+      </View>
+
+
+      {cartData?.length > 0 ? (
+        <View >
+          <View style={{ height:"70%"}}>
+
+            <FlatList
+
               data={cartData}
-              extraData={refreshFlatlist}
-      
-              renderItem={({item}) => {
-                return(
-                <View style={styles.cartCard} key={item.key}>
-              <Image source={{uri:item.productImage}} style={{height: 80, width: 80}} />
-              <View
-                style={{
-                  height: 100,
-                  marginLeft: 10,
-                  paddingVertical: 20,
-                  flex: 1,
-                }}>
-                <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.productName}</Text>
-                <Text style={{fontSize: 13, color: COLORS.grey}}>
-                  {item.ingredients}
-                </Text>
-                <Text style={{fontSize: 17, fontWeight: 'bold'}}>Rs. {item.productPrice}</Text>
-              </View>
-              <View style={{marginRight: 5, alignItems: 'center'}}>
-                <View>
-                <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={()=>{
-                
-                cartRemoveHandler(item.key, item._id, item.productName)
-              }}>
-                  <Icon name="alpha-x-circle" size={25} style = {{padding : 5}} color={COLORS.white} />
-                  </TouchableOpacity>
-                  
-                </View>
-                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-                    <View style={styles.incrementBox}>
-                      <TouchableOpacity
-                      style={styles.incrementButtonStyle}
-                        
-                        onPress={()=>{decreaseQuantity(item._id)}}>
-                        <Text style={styles.incrementtextStyle}>-</Text>
-                      </TouchableOpacity>
-                      <Text style={{fontSize:15, padding:4, textAlign:"center"}}>{quantity}</Text>
-                      <TouchableOpacity
-                      style={styles.incrementButtonStyle}
-                        
-                        onPress={()=>{increaseQuantity(item._id, item.Stock)}}>
-                        <Text style={styles.incrementtextStyle}>+</Text>
-                      </TouchableOpacity>
+              extraData={cartData}
+              renderItem={({ item, index }) => {
+                return (
+                  <View style={styles.cartCard} key={item.key}>
+                    <Image source={{ uri: item.productImage }} style={{ height: 80, width: 80 }} />
+                    <View
+                      style={{
+                        height: 100,
+                        marginLeft: 10,
+                        paddingVertical: 20,
+                        flex: 1,
+                      }}>
+                      <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.productName}</Text>
+                      <Text style={{ fontSize: 13, color: COLORS.grey }}>
+                      </Text>
+                      <Text style={{ fontSize: 17, fontWeight: 'bold' }}>Rs. {item.productPrice}</Text>
                     </View>
+                    <View style={{ marginRight: 5, alignItems: 'center' }}>
+                      <View style={{marginBottom:18, marginLeft:18}}>
+                        <TouchableOpacity
+                          style={styles.actionBtn}
+                          onPress={() => {
+
+                            cartRemoveHandler(item.index, item._id, item.productName)
+                          }}>
+                          <Icon name="alpha-x-circle" size={19} style={{ padding: 5 }} color={COLORS.white} />
+                        </TouchableOpacity>
+
+                      </View>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <View style={styles.incrementBox}>
+                          <TouchableOpacity
+                            style={styles.incrementButtonStyle}
+
+                            onPress={() => { decreaseQuantity(item._id) }}>
+                            <Text style={styles.incrementtextStyle}>-</Text>
+                          </TouchableOpacity>
+                          <Text style={{ fontSize: 15, padding: 4, textAlign: "center" }}>{item.quantity}</Text>
+                          <TouchableOpacity
+                            style={styles.incrementButtonStyle}
+
+                            onPress={() => { increaseQuantity(item._id, item.Stock) }}>
+                            <Text style={styles.incrementtextStyle}>+</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+
                   </View>
-              </View>
-              
-            </View>
                 )
               }}
               keyExtractor={(item, index) => index.toString()}
             />
-            </View>
-      
-            <View>
+          </View>
+
+          <View>
             <View
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      marginVertical: 20,
-                      height: 80,
-                      elevation: 15,
-                      backgroundColor: COLORS.white,
-                      marginVertical: 10,
-                      marginHorizontal: 20,
-                      paddingHorizontal: 10,
-                    }}>
-                    <Text style={{color: '#333', fontSize: 20, paddingLeft: 15}}>
-                      Total Price:
-                    </Text>
-                    <Text
-                      style={{
-                        color: 'crimson',
-                        fontSize: 22,
-                        paddingRight: 15,
-                        fontWeight: '700',
-                      }}>
-                      Rs. {totalPrice}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      width:"100%",
-                      alignItems: 'center',
-                    }}>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor:COLORS.primary,
-                        height:33,
-                        width: 150,
-                        marginLeft: 170,
-                        elevation: 8,
-                        borderRadius: 10,
-      
-                      }}
-                      onPress={() => navigation.navigate('Order')}>
-                      <Text style={styles.checkouttextStyle}>
-                        Go to Checkout
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                
-            </View>
-            
-            
-            </View>
-            
-            
-      
-            
-      
-              ):(
-            
-              <View
+              style={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexDirection: 'row',
+                marginVertical: 20,
+                height: 80,
+                elevation: 15,
+                backgroundColor: COLORS.white,
+                marginVertical: 10,
+                marginHorizontal: 20,
+                paddingHorizontal: 10,
+              }}>
+              <Text style={{ color: '#333', fontSize: 20, paddingLeft: 15 }}>
+                Total Price:
+              </Text>
+              <Text
                 style={{
-                  height: 120,
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  color: 'crimson',
+                  fontSize: 22,
+                  paddingRight: 15,
+                  fontWeight: '700',
                 }}>
-                <Text style={{color: '#333', fontSize: 20, textAlign: 'center'}}>
-                  Your cart is empty 😢
+                Rs. {cartData.reduce(
+                  (total, item) => total + item.productPrice * item.quantity,
+                  0,
+                )}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: COLORS.primary,
+                  height: 33,
+                  width: 150,
+                  marginLeft: 170,
+                  elevation: 8,
+                  borderRadius: 10,
+
+                }}
+                onPress={() => navigation.navigate('Order')}>
+                <Text style={styles.checkouttextStyle}>
+                  Go to Checkout
                 </Text>
-              </View>
-              )}
-            
-            
-          </SafeAreaView>
-          
-          )
-  
-    
-   
-    
-  
+              </TouchableOpacity>
+            </View>
+
+          </View>
+
+
+        </View>
+
+
+
+
+
+      ) : (
+
+        <View
+          style={{
+            height: 120,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image style={{
+            resizeMode: 'cover',
+            height: 250,
+            width: 250,
+            marginTop:200
+          }}
+
+            source={{ uri: "https://i0.wp.com/www.huratips.com/wp-content/uploads/2019/04/empty-cart.png?fit=603%2C288&ssl=1" }} />
+
+          <Text style={{ color: '#333', fontSize: 20, textAlign: 'center', fontWeight:"bold" }}>
+            Ooops... Your cart is empty
+          </Text>
+          <Text style={{ color: '#333', fontSize: 18, textAlign: 'center', color:"grey", padding:6, margin:8 }}>
+            Looks like you have not added anything to your cart
+          </Text>
+          <TouchableOpacity
+                  style={{
+                    backgroundColor: COLORS.primary,
+                    height: 33,
+                    width: 150,
+                    borderRadius: 10,
+                    marginRight: 18
+                  }}
+
+                  onPress={() => {
+                    navigation.navigate('Shop')
+                  }}>
+                  <Text style={styles.adcarttextStyle}>Shop</Text>
+                </TouchableOpacity>
+        </View>
+      )}
+
+    </SafeAreaView>
+
+  )
+
+
+
+
+
 };
 const styles = StyleSheet.create({
   container: {
@@ -261,9 +284,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bgImg: {
-    flex : 1,
-    position : 'absolute',
-    width : "100%",
+    flex: 1,
+    position: 'absolute',
+    width: "100%",
     height: '100%',
     justifyContent: 'center'
   },
@@ -276,7 +299,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     alignItems: 'center'
   },
-  profile:{
+  profile: {
     height: 120,
     width: 120,
     borderRadius: 25,
@@ -299,25 +322,25 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     backgroundColor: COLORS.primary,
-    borderColor:"white",
+    borderColor: "white",
     borderWidth: 3,
-    borderRadius: 5, 
+    borderRadius: 5,
     bottom: "8%"
   },
-  btntext:{
+  btntext: {
     color: "white",
-    fontWeight:"bold", 
-      fontSize:16,
-      padding:4, 
-      textAlign:"center"
+    fontWeight: "bold",
+    fontSize: 16,
+    padding: 4,
+    textAlign: "center"
   },
   header: {
     paddingVertical: 30,
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 20,
-    marginTop:20
-    
+    marginTop: 20,
+
   },
   cartCard: {
     height: 100,
@@ -331,46 +354,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionBtn: {
-    width: 40,
-    height: 40,
-    marginLeft:70,
-    marginBottom:7,
-    backgroundColor: COLORS.primary,
+    width: 30,
+    height: 30,
+    marginLeft: 70,
+    backgroundColor: "lightgrey",
     borderRadius: 30,
-    paddingHorizontal: 2,
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
   },
-  incrementButtonStyle:{
-    backgroundColor:COLORS.primary,
-    height:33,
-    width: 38,
-    borderRadius:10
+  incrementButtonStyle: {
+    backgroundColor: COLORS.primary,
+    height: 30,
+    width: 34,
+    borderRadius: 10
   },
-  incrementtextStyle:{
-    color:COLORS.white, 
-    fontWeight:"bold", 
-    fontSize:16,
-    padding:4, 
-    textAlign:"center"
+  incrementtextStyle: {
+    color: COLORS.white,
+    fontWeight: "bold",
+    fontSize: 16,
+    padding: 4,
+    textAlign: "center"
   },
-  incrementBox:{
-    borderWidth:1, borderColor:COLORS.lightprimary,
-    backgroundColor:COLORS.lightprimary,
-    borderRadius:10, 
-    height:35, 
-    width:110, 
-    flexDirection:"row", 
-    justifyContent:"space-between",
-    marginLeft:18
+  incrementBox: {
+    borderWidth: 1, borderColor: COLORS.lightprimary,
+    backgroundColor: COLORS.lightprimary,
+    borderRadius: 10,
+    height: 32,
+    width: 110,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginLeft: 18
   },
-  checkouttextStyle:{
-    color:COLORS.white, 
-    fontSize:15,
-    padding:4, 
-    textAlign:"center"
+  checkouttextStyle: {
+    color: COLORS.white,
+    fontSize: 15,
+    padding: 4,
+    textAlign: "center"
   },
-  });
-  export default Cart;
+  adcarttextStyle: {
+    color: COLORS.white,
+    fontSize: 16,
+    padding: 4,
+    textAlign: "center",
+    fontWeight:"bold"
+  },
+});
+export default Cart;
 

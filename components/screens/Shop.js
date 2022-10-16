@@ -18,14 +18,16 @@ export default ({ navigation }) => {
           <Tab.Navigator
         
           screenOptions={{
-            tabBarLabelStyle: { fontSize: 17, fontWeight:'bold', color:COLORS.primary, marginTop:19 },
-            
-            tabBarStyle: { backgroundColor: COLORS.lightprimary,height:70  },
-            tabBarIndicatorStyle:{backgroundColor:COLORS.primary},
-            swipeEnabled:true,
-            
-                      }}>
-          <Tab.Screen name="Category" component={Category} />
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarLabelStyle: {
+              fontSize: 15,
+              color: COLORS.primary,
+            },
+            tabBarItemStyle: { height: 60 },
+            tabBarStyle: { backgroundColor: COLORS.lightprimary , margin:20, borderRadius:6, marginTop:40},
+            tabBarIndicatorStyle: { backgroundColor: COLORS.primary, height: 3 },
+            swipeEnabled: true}}>
+          <Tab.Screen name="Category" component={Category}  />
           <Tab.Screen name="AllMakeup" component={AllMakeup} />
 
 

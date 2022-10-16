@@ -33,7 +33,7 @@ export default ({ navigation }) => {
                               borderRadius: 8,
                               justifyContent: 'center',
                               alignItems: 'center',
-                              marginTop: 49,
+                              marginTop: 109,
                               alignSelf: "flex-end",
                               activeOpacity:0.8,
                               
@@ -67,15 +67,15 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     backimg: {
-      height: 700,
-      width: 400,
+      height: "100%",
+      width: 420,
 
   
     },
     text: {
       color: "white",
       fontSize: 58,
-      marginTop: 445,
+      marginTop: 495,
       marginLeft: 30,
       fontWeight: "bold",
       textAlign: "left",

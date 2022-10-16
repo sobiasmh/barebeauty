@@ -31,6 +31,7 @@ export default function OrderSteps({activeTab}) {
 const styles = StyleSheet.create({
   OrderStepsMain: {
     width: width * 1,
+    marginTop:30,
     height: 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
