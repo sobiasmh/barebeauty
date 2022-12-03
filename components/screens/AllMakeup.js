@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, Text, View, ImageBackground, Pressable, TouchableOpacity,ActivityIndicator,  ScrollView, Image, FlatList, Modal,Button } from 'react-native';
 
 
@@ -296,7 +296,7 @@ export default ({ navigation, route }) => {
                   <View style={styles.carts}>
                     <Image
                       style={styles.productImg}
-                      source={{ uri: `http://192.168.100.4:5000/${item.images[0].fileName}` }}
+                      source={{ uri: item.images[0].imageUrl }}
                     />
 
                     <View>
@@ -498,7 +498,7 @@ export default ({ navigation, route }) => {
                 text1: `Review posted successfully`,
               });
             }
-          })+8
+          })
           .catch((err) => {
             console.log(err);
           });

@@ -211,7 +211,7 @@ const Cart = ({ navigation }) => {
                   borderRadius: 10,
 
                 }}
-                onPress={() => navigation.navigate('Order')}>
+                onPress={() => navigation.navigate('Payment')}>
                 <Text style={styles.checkouttextStyle}>
                   Go to Checkout
                 </Text>

@@ -5,6 +5,8 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import baseURL from '../../assets/common/baseURL';
 import axios from 'axios';
 import COLORS from '../const/colors';
+import { ResizeMode } from 'expo-av'
+import VideoPlayer from 'expo-video-player'
 export default function VideoDesc({ navigation, route }) {
   const [postData, setpostData] = useState(route.params.data);
   const [list, setlist] = useState();
@@ -24,10 +26,18 @@ export default function VideoDesc({ navigation, route }) {
   return (
     <View style={styles.mainPlayerView}>
       <View style={styles.videoView}>
-        <YoutubePlayer
-          height={300}
-          videoId={postData.videoId}
-        />
+      <VideoPlayer
+          style={{ width: 450, height: 240, }}
+          videoProps={{
+            shouldPlay: true,
+            resizeMode: ResizeMode.COVER,
+
+            // ❗ source is required https://docs.expo.io/versions/latest/sdk/video/#props
+            source: {
+              uri: postData.video.videoUrl,
+            },
+          }}
+        /> 
       </View>
       <Text style={styles.postTitle}>{postData.title}</Text>
       <Text style={styles.desc}>{postData.Description}</Text>

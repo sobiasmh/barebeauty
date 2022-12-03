@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Cart from './Cart';
 import OrderSteps from './OrderSteps';
 import Order from './Order';
+import Payment from './Payment';
 
 
 export default ({ navigation }) => {
@@ -20,6 +21,8 @@ export default ({ navigation }) => {
               >
                       <Stack.Screen name="Cart" component={Cart} />
                       <Stack.Screen name="OrderSteps" component={OrderSteps} />
+                      <Stack.Screen name="Payment" component={Payment} />
+
                       <Stack.Screen name="Order" component={Order} />
 
               

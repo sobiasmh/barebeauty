@@ -5,11 +5,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import Shop from '../screens/Shop';
 import Watch from '../screens/Watch';
+import SkinTone from '../screens/SkinTone';
 import profile from '../screens/profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icons from 'react-native-vector-icons/Ionicons';
 import COLORS from '../const/colors';
 import { color } from 'react-native-reanimated';
 import Loginscreens from '../screens/Loginscreens';
+import VirtualTry from '../screens/VirtualTry';
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
@@ -61,8 +64,8 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={Home}
+        name="SkinTone"
+        component={SkinTone}
         options={{
           headerShown:false,
           tabBarIcon: ()=> (
@@ -78,12 +81,14 @@ const BottomNavigator = () => {
                 borderRadius: 30,
                 top: -25,
                 elevation: 5,
+                marginLeft:10
               }}>
-              <Icon name="search" color={COLORS.white} size={28} />
+              <Icons name="ios-heart-circle-sharp" color={COLORS.white} size={28} />
             </View>
           ),
         }}
       />
+      
       <Tab.Screen
         name="Watch"
         component={Watch}

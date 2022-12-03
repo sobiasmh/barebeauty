@@ -19,6 +19,7 @@ import {useState} from 'react';
 import COLORS from '../const/colors';
 const {width} = Dimensions.get('window');
 import Toast from 'react-native-toast-message';
+import {CardField, useStripe} from '@stripe/stripe-react-native';
 
 import baseURL from '../../assets/common/baseURL';
 
@@ -59,17 +60,90 @@ const {cartData} = useSelector(state => state.cart);
    
     if (cartData?.length > 0) {
       axios
-            .post(`${baseURL}order/newOrder`, order  
-            )
-            .then((res) => {
-                if (res.status == 201) {
-                  setId(res.data.trackigID)
-                  setActive(3)
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+      .post(`${baseURL}order/newOrder`, order  
+      )
+      .then((res) => {
+          if (res.status == 201) {
+            setId(res.data.trackigID)
+            setActive(4)
+          }
+      })
+      .catch((err) => {
+          console.log("error",err);
+      });
+      // setActive(3);
+
+    }
+  };
+
+  const paymentData = {
+    amount: Math.round(totalPrice * 100),
+  };
+
+  const {createPaymentMethod} = useStripe();
+  const submitHandler = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const {data} = await axios
+    .post(`${baseURL}payment/process`, 
+    paymentData
+    )
+    .then((res) => {
+      console.log(res);
+
+    })
+    .catch((err) => {
+        console.log("error",err);
+    });
+  
+    const clientSecret = data.client_secret;
+
+    const billingDetails = {
+      name: user.name,
+      email: user.email,
+      phone: phoneNumber,
+    };
+
+    const paymentIntent = await createPaymentMethod({
+      paymentIntentClientSecret: clientSecret,
+      paymentMethodType: 'Card',
+      paymentMethodData: {
+        billingDetails,
+      },
+    });
+    if (paymentIntent.error) {
+      Toast.show({
+        topOffset: 60,
+        type: "error",
+        text1: "Something went wrong",
+      });
+      
+    } else if (paymentIntent) {
+      order.paymentMethod = {
+        id: paymentIntent.paymentMethod.id,
+        status: 'success',
+      };
+      Toast.show({
+        topOffset: 60,
+        type: "error",
+        text1: "Payment Successful",
+      });
+      
+      // axios
+      //       .post(`${baseURL}order/newOrder`, order  
+      //       )
+      //       .then((res) => {
+      //           if (res.status == 201) {
+      //             setId(res.data.trackigID)
+      //             setActive(4)
+      //           }
+      //       })
+      //       .catch((err) => {
+      //           console.log("error",err);
+      //       });
     }
   };
 
@@ -304,6 +378,43 @@ const {cartData} = useSelector(state => state.cart);
 
     );
   }
+  else if(active === 3){
+    return(
+      <View style={styles.container}>
+      <OrderSteps activeTab={active} />
+      <ScrollView style={styles.confirmation}>
+      <Text
+        style={{
+          color: '#333',
+          fontSize: 20,
+          textAlign: 'center',
+        }}>
+        Enter your Card Info
+      </Text>
+      <CardField
+        postalCodeEnabled={false}
+        cardNumberEnabled={true}
+        style={{
+          width: '90%',
+          height: 50,
+          marginVertical: 30,
+          marginLeft: 15,
+          color: '#333',
+        }}
+      />
+      <TouchableOpacity style={{backgroundColor:COLORS.primary,
+          height:33,
+          width: 150,
+          marginLeft: 230,
+          elevation: 8,
+          borderRadius: 10,}} onPress={()=>{submitHandler()}}>
+        <Text style={styles.buttonText}>Pay - ${totalPrice}</Text>
+      </TouchableOpacity>
+    </ScrollView>
+      </View>
+
+    )
+  }
   else{
   return (
     <View
@@ -414,4 +525,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight:"bold"
   },
+  
 });

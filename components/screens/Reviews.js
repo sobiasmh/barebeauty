@@ -139,7 +139,7 @@ export default function Review({navigation}) {
                   <View style={styles.carts}>
                     <Image
                       style={styles.productImg}
-                      source={{ uri: `http://192.168.100.4:5000/${item.images[0].fileName}` }}
+                      source={{ uri: item.images[0].imageUrl }}
                     />
 
                     <View>

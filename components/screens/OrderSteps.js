@@ -23,6 +23,15 @@ export default function OrderSteps({activeTab}) {
         />
         <Text style={{color: '#000', fontSize: 15}}>Confirm Order</Text>
       </View>
+
+      <View style={styles.OrderSteps}>
+        <Icon
+          name="wallet-outline"
+          size={30}
+          color={activeTab === 3 ? '#3BB77E' : '#000'}
+        />
+        <Text style={{color: '#000', fontSize: 15}}>Payment</Text>
+      </View>
       
     </View>
   );

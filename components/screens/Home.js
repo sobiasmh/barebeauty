@@ -90,6 +90,8 @@ export default ({ navigation }) => {
     );
   };
   const Popular = () => {
+    console.disableYellowBox = true
+
     return (
       <FlatList
         style={{ width: '100%' }}
@@ -102,8 +104,9 @@ export default ({ navigation }) => {
               <View style={styles.carts}>
                 <Image
                   style={styles.productImg}
-                  source={{ uri: "https://www.vegas.pk/btPublic/bt-uploads/large/nyx-stay-matte-but-not-flat-liquid-foundation.jpg" }}
+                  source={{ uri: item.images[0].imageUrl }}
                 />
+                
                 <View>
                   <Text style={styles.prdtext1}>{item.name}</Text>
                 </View>
